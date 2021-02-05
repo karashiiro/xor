@@ -13,7 +13,7 @@ args = parser.parse_args(sys.argv[1:])
 
 if len(args.xor_key[0]) % 2 != 0:
     print("error: xor encryption key length must be divisible by 2")
-    sys.exit(0)
+    sys.exit(1)
 
 xor_byte_count = int(len(args.xor_key[0]) / 2)
 xor_key_bytes = [int(args.xor_key[0][i*2:i*2+2], base=16) for i in range(0, xor_byte_count)]
