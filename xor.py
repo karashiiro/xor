@@ -35,10 +35,10 @@ def main():
                 i = 0
     new_contents = bytes(new_contents_list)
 
-    if args.output_path[0] == "":
+    if len(args.output_path) == 0:
         dir_name, file_name = path.split(args.file_path[0])
         fn_no_ext, ext = path.splitext(file_name)
-        out_path = path.join(dir_name, fn_no_ext + args.suffix + ext)
+        out_path = path.join(dir_name, fn_no_ext + args.suffix[0] + ext)
     else:
         out_path = path.abspath(args.output_path[0])
 
