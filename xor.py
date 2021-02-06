@@ -1,6 +1,7 @@
 import argparse
 from os import path
 import sys
+from typing import List
 
 def parse_args():
     parser = argparse.ArgumentParser(description="save an XOR'd copy of a file")
@@ -14,6 +15,16 @@ def parse_args():
         help="optional output file path; overrides suffix")
     return parser.parse_args(sys.argv[1:])
 
+def xor_data(key_bytes: List[int], data: bytes) -> bytes:
+    new_data_list = []
+    i = 0
+    for x in data:
+        new_data_list.append(x ^ key_bytes[i])
+        i += 1
+        if i == len(key_bytes):
+            i = 0
+    return bytes(new_data_list)
+
 def main():
     args = parse_args()
 
@@ -21,19 +32,12 @@ def main():
         print("error: xor encryption key length must be divisible by 2")
         sys.exit(1)
 
-    xor_byte_count = int(len(args.xor_key[0]) / 2)
-    xor_key_bytes = [int(args.xor_key[0][i*2:i*2+2], base=16) for i in range(0, xor_byte_count)]
+    key_byte_count = int(len(args.xor_key[0]) / 2)
+    key_bytes = [int(args.xor_key[0][i*2:i*2+2], base=16) for i in range(0, key_byte_count)]
 
-    new_contents_list = []
     with open(args.file_path[0], "rb") as f:
         contents = f.read()
-        i = 0
-        for x in contents:
-            new_contents_list.append(x ^ xor_key_bytes[i])
-            i += 1
-            if i == len(xor_key_bytes):
-                i = 0
-    new_contents = bytes(new_contents_list)
+        new_contents = xor_data(key_bytes, contents)
 
     if len(args.output_path) == 0:
         dir_name, file_name = path.split(args.file_path[0])
